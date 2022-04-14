@@ -25,13 +25,12 @@ for i in range(1000):
     tic = time.perf_counter_ns()
     start = count()
 
-    parent_span = tracer.start_as_current_span("foo")
-    span = trace.get_current_span()
-    
-    span.end()
-    end = count_end()
+    with Timer() as t:
+        with tracer.start_as_current_span("one") as parent:
+            parent.end()
+        
     toc = time.perf_counter_ns()
-    elapsed = end - start
+    elapsed = t.cycles
     elapsed_time = "{:.4f}".format((toc - tic) / 1000000)
     #print(f'elapsed cycles: {elapsed}')
     #print(f'elapsed time: {elapsed_time}')
